@@ -70,4 +70,42 @@ class ChapterFacadeTest {
         String msg = facade.getDeleteWarning(c.getId());
         assertTrue(msg.contains("اجزاء") && msg.contains("لغت"));
     }
+    @Test void titleIsTrimmedBeforeSaving() throws Exception {
+        Chapter c = facade.createChapter("   خانواده   ");
+        assertEquals("خانواده", facade.getChapter(c.getId()).getTitle());
+    }
+
+    @Test void blankTitleGivesClearMessage() {
+        ValidationException ex = assertThrows(ValidationException.class, () -> facade.createChapter(""));
+        assertFalse(ex.getMessage().trim().isEmpty());
+    }
+
+    @Test void emptyListAtStart() {
+        assertTrue(facade.getAllChapters().isEmpty());
+    }
+
+    @Test void getMissingChapterReturnsNull() {
+        assertNull(facade.getChapter(999));
+    }
+
+    @Test void renameMissingChapterReturnsFalse() throws Exception {
+        assertFalse(facade.renameChapter(999, "نام"));
+    }
+
+    @Test void deleteMissingChapterReturnsFalse() {
+        assertFalse(facade.deleteChapter(999, true));
+    }
+
+    @Test void deleteRemovesOnlyTheSelectedChapter() throws Exception {
+        Chapter a = facade.createChapter("A");
+        Chapter b = facade.createChapter("B");
+        assertTrue(facade.deleteChapter(a.getId(), true));
+        assertNull(facade.getChapter(a.getId()));
+        assertNotNull(facade.getChapter(b.getId()));
+        assertEquals(1, facade.getAllChapters().size());
+    }
+
+    @Test void deleteWarningForMissingChapterDoesNotCrash() {
+        assertNotNull(facade.getDeleteWarning(999));
+    }
 }
