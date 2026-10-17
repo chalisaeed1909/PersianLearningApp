@@ -68,6 +68,6 @@ class ChapterFacadeTest {
     @Test void deleteWarningMentionsDependentData() throws Exception {
         Chapter c = facade.createChapter("X");
         String msg = facade.getDeleteWarning(c.getId());
-        assertTrue(msg.contains("components") && msg.contains("glossary"));
+        assertTrue(msg.contains("اجزاء") && msg.contains("لغت"));
     }
 }
