@@ -1,6 +1,7 @@
 package business;
 
 import java.util.List;
+
 import data.dao.ChapterDAO;
 import model.Chapter;
 
@@ -11,7 +12,7 @@ public class ChapterFacade {
 
     private String validateTitle(String title) throws ValidationException {
         if (title == null || title.trim().isEmpty()) {
-            throw new ValidationException("Title khali nahi ho sakta. Barah-e-meharbani chapter ka title likhein.");
+            throw new ValidationException("عنوان خالی نہیں ہو سکتا۔ براہ کرم باب کا عنوان لکھیں۔");
         }
         return title.trim();
     }
@@ -29,11 +30,12 @@ public class ChapterFacade {
         return dao.updateTitle(id, clean);
     }
 
-    /** BR-05: confirmation dialog mein ye message dikhao. */
+    /** BR-05: confirmation dialog mein ye message dikhta hai. */
     public String getDeleteWarning(int id) {
         Chapter c = dao.findById(id);
-        return "Chapter \"" + c.getTitle() + "\" delete karne par iske tamam components "
-             + "aur glossary entries bhi delete ho jayenge. Kya aap confirm karte hain?";
+        String name = (c == null) ? "" : " \"" + c.getTitle() + "\"";
+        return "باب" + name + " حذف کرنے سے اس کے تمام اجزاء اور لغت کے الفاظ بھی حذف ہو جائیں گے۔ "
+             + "کیا آپ حذف کی تصدیق کرتے ہیں؟";
     }
 
     /** confirmed=false ho to kuch delete nahi hota (BR-04). */
